@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from sqlmodel import SQLModel, Session
+from sqlmodel import SQLModel, Session, select
 from models import Dog, BreathingSession
 from database import create_db_and_tables, engine
 
@@ -24,4 +24,6 @@ def create_dog(dog: Dog):
 
 @app.get("/dogs")
 def get_dogs():
-    pass
+    with Session(engine) as session:
+        dogs = session.exec(select(Dog)).all()
+        return dogs
