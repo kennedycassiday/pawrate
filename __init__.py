@@ -1,0 +1,3 @@
+"""
+PawRate API package initialization.
+"""
