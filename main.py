@@ -31,7 +31,7 @@ def get_dogs():
 @app.get("/dogs/{id}")
 def get_dog(id):
     with Session(engine) as session:
-        dog = session.exec(select(Dog).where(Dog.id==id)).one()
+        dog = session.get(Dog, id)
         if not dog:
             return {"error": "Dog not found"}
         return dog
