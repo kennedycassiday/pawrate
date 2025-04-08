@@ -31,7 +31,17 @@ def get_dogs():
 @app.get("/dogs/{id}")
 def get_dog(id):
     with Session(engine) as session:
-        dog = session.exec(select(Dog).where(Dog.id==id)).first()
+        dog = session.exec(select(Dog).where(Dog.id==id)).one()
         if not dog:
             return {"error": "Dog not found"}
         return dog
+
+@app.delete("/dogs/{id}")
+def delete_dog(id):
+    with Session(engine) as session:
+        dog = session.exec(select(Dog).where(Dog.id==id)).one()
+        if not dog:
+            return {"error": "Dog not found"}
+        session.delete(dog)
+        session.commit()
+        return {"Deleted dog": dog}
