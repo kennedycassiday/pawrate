@@ -27,3 +27,11 @@ def get_dogs():
     with Session(engine) as session:
         dogs = session.exec(select(Dog)).all()
         return dogs
+
+@app.get("/dogs/{id}")
+def get_dog(id):
+    with Session(engine) as session:
+        dog = session.exec(select(Dog).where(Dog.id==id)).first()
+        if not dog:
+            return {"error": "Dog not found"}
+        return dog
