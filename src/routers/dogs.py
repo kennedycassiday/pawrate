@@ -5,6 +5,7 @@ from src.database import engine
 
 router = APIRouter(
     prefix="/dogs",
+    tags=["dogs"],
 )
 
 @router.post("")
