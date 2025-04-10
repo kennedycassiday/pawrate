@@ -9,12 +9,21 @@ router = APIRouter(
     tags=["sessions"]
 )
 
+def timestamp_conversion(timestamp):
+    return datetime.fromisoformat(timestamp.replace('Z', '+00:00'))
+
 @router.post("")
 def create_session(breathing_session: BreathingSession):
     if isinstance(breathing_session.timestamp, str):
-        breathing_session.timestamp = datetime.fromisoformat(breathing_session.timestamp.replace('Z', '+00:00'))
+        breathing_session.timestamp = timestamp_conversion(breathing_session.timestamp)
     with Session(engine) as session:
         session.add(breathing_session)
         session.commit()
         session.refresh(breathing_session)
         return breathing_session
+
+@router.get("{dog_id}")
+def get_sessions(dog_id):
+    with Session(engine) as session:
+        breathing_sessions = session.exec(select(BreathingSession).where(BreathingSession.dog_id == dog_id)).all()
+        return breathing_sessions
