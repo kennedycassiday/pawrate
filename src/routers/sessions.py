@@ -26,4 +26,14 @@ def create_session(breathing_session: BreathingSession):
 def get_sessions(dog_id):
     with Session(engine) as session:
         breathing_sessions = session.exec(select(BreathingSession).where(BreathingSession.dog_id == dog_id)).all()
+        if not breathing_sessions:
+            return {"error": "Session not found"}
         return breathing_sessions
+
+@router.get("{dog_ig}/{id}")
+def get_session(id):
+    with Session(engine) as session:
+        breathing_session = session.get(BreathingSession, id)
+        if not breathing_session:
+            return {"error": "Session not found"}
+        return breathing_session
