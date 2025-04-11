@@ -38,6 +38,22 @@ def get_session(id):
             return {"error": "Session not found"}
         return breathing_session
 
+@router.put("/{id}")
+def update_session(breathing_session: BreathingSession, id):
+    with Session(engine) as session:
+        db_session = session.get(BreathingSession, id)
+        if not db_session:
+            return {"error": "Session not found"}
+    if isinstance(breathing_session.timestamp, str):
+        breathing_session.timestamp = timestamp_conversion(breathing_session.timestamp)
+        session_data = breathing_session.model_dump(exclude_unset=True)
+        db_session.sqlmodel_update(session_data)
+        session.add(db_session)
+        session.commit()
+        session.refresh(db_session)
+        return db_session
+
+
 @router.delete("/{id}")
 def delete_session(id):
     with Session(engine) as session:
