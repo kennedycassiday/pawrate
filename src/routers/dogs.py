@@ -30,6 +30,20 @@ def get_dog(id):
             return {"error": "Dog not found"}
         return dog
 
+@router.put("/{id}")
+def update_dog(dog: Dog, id):
+    with Session(engine) as session:
+        db_dog = session.get(Dog, id)
+        if not db_dog:
+            return {"error": "Dog not found"}
+        dog_data = dog.model_dump(exclude_unset=True)
+        db_dog.sqlmodel_update(dog_data)
+        session.add(db_dog)
+        session.commit()
+        session.refresh(db_dog)
+        return db_dog
+
+
 @router.delete("/{id}")
 def delete_dog(id):
     with Session(engine) as session:

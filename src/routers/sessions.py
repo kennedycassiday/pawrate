@@ -30,7 +30,7 @@ def get_sessions(dog_id):
             return {"error": "Session not found"}
         return breathing_sessions
 
-@router.get("{id}")
+@router.get("/{id}")
 def get_session(id):
     with Session(engine) as session:
         breathing_session = session.get(BreathingSession, id)
@@ -38,7 +38,7 @@ def get_session(id):
             return {"error": "Session not found"}
         return breathing_session
 
-@router.delete("{id}")
+@router.delete("/{id}")
 def delete_session(id):
     with Session(engine) as session:
         breathing_session = session.get(BreathingSession, id)
