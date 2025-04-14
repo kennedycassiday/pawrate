@@ -22,7 +22,7 @@ def create_session(breathing_session: BreathingSession):
         session.refresh(breathing_session)
         return breathing_session
 
-@router.get("")
+@router.get("/dog/{dog_id}")
 def get_sessions(dog_id):
     with Session(engine) as session:
         breathing_sessions = session.exec(select(BreathingSession).where(BreathingSession.dog_id == dog_id)).all()
