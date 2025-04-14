@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from sqlmodel import Session, select
 from src.models import Dog
 from src.database import engine
@@ -27,7 +27,7 @@ def get_dog(id):
     with Session(engine) as session:
         dog = session.get(Dog, id)
         if not dog:
-            return {"error": "Dog not found"}
+            raise HTTPException(status_code=404, detail="Dog not found")
         return dog
 
 @router.put("/{id}")
@@ -35,7 +35,7 @@ def update_dog(dog: Dog, id):
     with Session(engine) as session:
         db_dog = session.get(Dog, id)
         if not db_dog:
-            return {"error": "Dog not found"}
+            raise HTTPException(status_code=404, detail="Dog not found")
         dog_data = dog.model_dump(exclude_unset=True)
         db_dog.sqlmodel_update(dog_data)
         session.add(db_dog)
@@ -49,7 +49,7 @@ def delete_dog(id):
     with Session(engine) as session:
         dog = session.get(Dog, id)
         if not dog:
-            return {"error": "Dog not found"}
+            raise HTTPException(status_code=404, detail="Dog not found")
         session.delete(dog)
         session.commit()
         return {"Deleted dog": dog}

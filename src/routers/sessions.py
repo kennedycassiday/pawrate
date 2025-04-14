@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from sqlmodel import Session, select
 from src.models import BreathingSession
 from src.database import engine
@@ -27,7 +27,7 @@ def get_sessions(dog_id):
     with Session(engine) as session:
         breathing_sessions = session.exec(select(BreathingSession).where(BreathingSession.dog_id == dog_id)).all()
         if not breathing_sessions:
-            return {"error": "Session not found"}
+            raise HTTPException(status_code=404, detail="Session not found")
         return breathing_sessions
 
 @router.get("/{id}")
@@ -35,7 +35,7 @@ def get_session(id):
     with Session(engine) as session:
         breathing_session = session.get(BreathingSession, id)
         if not breathing_session:
-            return {"error": "Session not found"}
+            raise HTTPException(status_code=404, detail="Session not found")
         return breathing_session
 
 @router.put("/{id}")
@@ -43,7 +43,7 @@ def update_session(breathing_session: BreathingSession, id):
     with Session(engine) as session:
         db_session = session.get(BreathingSession, id)
         if not db_session:
-            return {"error": "Session not found"}
+            raise HTTPException(status_code=404, detail="Session not found")
     if isinstance(breathing_session.timestamp, str):
         breathing_session.timestamp = timestamp_conversion(breathing_session.timestamp)
         session_data = breathing_session.model_dump(exclude_unset=True)
@@ -59,7 +59,7 @@ def delete_session(id):
     with Session(engine) as session:
         breathing_session = session.get(BreathingSession, id)
         if not breathing_session:
-            return {"error": "Session not found"}
+            raise HTTPException(status_code=404, detail="Session not found")
         session.delete(breathing_session)
         session.commit()
         return {"Deleted session": breathing_session}
