@@ -1,0 +1,29 @@
+# Python cache files
+__pycache__/
+*.py[cod]
+
+# Virtual environment
+venv/
+
+# Local config or secrets
+.env
+
+# Editor settings
+.vscode/
+.idea/
+
+# Build & dist
+*.egg-info/
+dist/
+build/
+
+# Git
+.git/
+.gitignore
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Don't copy the database file into the image
+pawrate.db
