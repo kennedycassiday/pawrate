@@ -8,19 +8,21 @@ export default function HomeScreen() {
       <Text style={styles.text}>Respiratory Rate Monitor</Text>
 
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={[styles.button, styles.button1]}>
+      <Link href="/new-session" asChild>
+        <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>New Session</Text>
         </TouchableOpacity>
+        </Link>
 
-        <TouchableOpacity style={[styles.button, styles.button2]}>
+        <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>View Data</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={[styles.button, styles.button3]}>
+        <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Email/Download Data</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={[styles.button, styles.button4]}>
+        <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Reminders</Text>
         </TouchableOpacity>
       </View>
@@ -48,6 +50,7 @@ const styles = StyleSheet.create({
   button: {
     paddingVertical: 15,
     paddingHorizontal: 30,
+    backgroundColor: '#96CEB4',
     borderRadius: 10,
     alignItems: 'center',
     shadowColor: '#000',
@@ -59,18 +62,7 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
-  button1: {
-    backgroundColor: '#96CEB4',
-  },
-  button2: {
-    backgroundColor: '#96CEB4',
-  },
-  button3: {
-    backgroundColor: '#96CEB4',
-  },
-  button4: {
-    backgroundColor: '#96CEB4',
-  },
+
   buttonText: {
     color: '#FED2E2',
     fontSize: 18,
@@ -81,7 +73,7 @@ const styles = StyleSheet.create({
 // export default function HomeScreen() {
 //   return (
 //     <View className="flex-1 items-center justify-center bg-pink-200">
-//       <Text className="text-3xl font-bold text-purple-700">Tailwind ✅</Text>
+//       <Text className="text-3xl font-bold text-purple-700">Tailwind</Text>
 //     </View>
 //   );
 // }
