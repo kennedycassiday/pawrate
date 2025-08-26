@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity} from "react-native";
 import { Link } from 'expo-router';
 
 export default function NewSession() {
@@ -13,7 +13,9 @@ export default function NewSession() {
       </Text>
       <View style={styles.buttonContainer}>
       <Link href="/begin-session" asChild>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button}
+        accessibilityRole="link"
+        importantForAccessibility="yes">
           <Text style={styles.buttonText}>Got it!</Text>
         </TouchableOpacity>
         </Link>
