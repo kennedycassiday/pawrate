@@ -27,8 +27,42 @@ export default function HomeScreen() {
         </TouchableOpacity>
 
         <Link href="/end-session" asChild>
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity style={{
+            paddingVertical: 15,
+            paddingHorizontal: 30,
+            backgroundColor: '#FF13F0',
+            borderRadius: 10,
+            alignItems: 'center',
+            shadowColor: '#000',
+            shadowOffset: {
+              width: 0,
+              height: 2,
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 3.84,
+            elevation: 5,
+          }}>
             <Text style={styles.buttonText}>End Session (Dev)</Text>
+          </TouchableOpacity>
+        </Link>
+
+        <Link href="/new-profile" asChild>
+          <TouchableOpacity style={{
+            paddingVertical: 15,
+            paddingHorizontal: 30,
+            backgroundColor: '#FF13F0',
+            borderRadius: 10,
+            alignItems: 'center',
+            shadowColor: '#000',
+            shadowOffset: {
+              width: 0,
+              height: 2,
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 3.84,
+            elevation: 5,
+          }}>
+            <Text style={styles.buttonText}>Dog Profile (Dev)</Text>
           </TouchableOpacity>
         </Link>
       </View>
