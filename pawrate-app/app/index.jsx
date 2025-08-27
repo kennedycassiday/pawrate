@@ -25,6 +25,12 @@ export default function HomeScreen() {
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Reminders</Text>
         </TouchableOpacity>
+
+        <Link href="/end-session" asChild>
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.buttonText}>End Session (Dev)</Text>
+          </TouchableOpacity>
+        </Link>
       </View>
     </View>
   );
