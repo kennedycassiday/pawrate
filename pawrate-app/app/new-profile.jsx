@@ -2,6 +2,11 @@ import { View, Text, StyleSheet, TouchableOpacity, TextInput} from "react-native
 import { Link } from 'expo-router';
 
 export default function NewProfile() {
+
+  const handlePress = () => {
+    pass
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.text}>
@@ -28,7 +33,7 @@ export default function NewProfile() {
 
       <View style={styles.buttonContainer}>
       <Link href="/" asChild>
-        <TouchableOpacity style={styles.button}
+        <TouchableOpacity onPress={handlePress} style={styles.button}
         accessibilityRole="link"
         importantForAccessibility="yes">
           <Text style={styles.buttonText}>Submit!</Text>

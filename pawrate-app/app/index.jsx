@@ -1,73 +1,39 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { useEffect, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { router } from 'expo-router';
+import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 
-import { Link } from 'expo-router';
+export default function EntryPoint() {
+  const [isLoading, setIsLoading] = useState(true)
 
-export default function HomeScreen() {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Respiratory Rate Monitor</Text>
+  useEffect(() => {
+    const checkDogId = async () => {
+      try {
+        const dogId = await AsyncStorage.getItem('dogId');
+        if (dogId) {
+          router.replace('/home');
+        } else {
+          router.replace('/new-profile');
+        }
+      } catch (error) {
+        console.error('Error checking dog ID:', error);
+        router.replace('/new-profile');
+      } finally {
+        setIsLoading(false);
+      }
+      };
+      checkDogId()
+  }, [])
 
-      <View style={styles.buttonContainer}>
-      <Link href="/new-session" asChild>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>New Session</Text>
-        </TouchableOpacity>
-        </Link>
-
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>View Data</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Email/Download Data</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Reminders</Text>
-        </TouchableOpacity>
-
-        <Link href="/end-session" asChild>
-          <TouchableOpacity style={{
-            paddingVertical: 15,
-            paddingHorizontal: 30,
-            backgroundColor: '#FF13F0',
-            borderRadius: 10,
-            alignItems: 'center',
-            shadowColor: '#000',
-            shadowOffset: {
-              width: 0,
-              height: 2,
-            },
-            shadowOpacity: 0.25,
-            shadowRadius: 3.84,
-            elevation: 5,
-          }}>
-            <Text style={styles.buttonText}>End Session (Dev)</Text>
-          </TouchableOpacity>
-        </Link>
-
-        <Link href="/new-profile" asChild>
-          <TouchableOpacity style={{
-            paddingVertical: 15,
-            paddingHorizontal: 30,
-            backgroundColor: '#FF13F0',
-            borderRadius: 10,
-            alignItems: 'center',
-            shadowColor: '#000',
-            shadowOffset: {
-              width: 0,
-              height: 2,
-            },
-            shadowOpacity: 0.25,
-            shadowRadius: 3.84,
-            elevation: 5,
-          }}>
-            <Text style={styles.buttonText}>Dog Profile (Dev)</Text>
-          </TouchableOpacity>
-        </Link>
-      </View>
+  if (isLoading) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.title}>PawRate</Text>
+        <ActivityIndicator size="large" color="#96CEB4" style={styles.spinner} />
+        <Text style={styles.subtitle}>Loading...</Text>
     </View>
-  );
+    );
+  }
 }
 
 const styles = StyleSheet.create({
@@ -77,43 +43,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#8F87F1',
   },
-  text: {
+  title: {
     color: '#FED2E2',
-    fontSize: 24,
+    fontSize: 32,
     fontWeight: 'bold',
-    marginBottom: 40,
+    marginBottom: 20,
   },
-  buttonContainer: {
-    width: '80%',
-    gap: 20,
-  },
-  button: {
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    backgroundColor: '#96CEB4',
-    borderRadius: 10,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-
-  buttonText: {
+  subtitle: {
     color: '#FED2E2',
     fontSize: 18,
-    fontWeight: 'bold',
+    marginTop: 20,
+  },
+  spinner: {
+    marginVertical: 20,
   },
 });
-
-// export default function HomeScreen() {
-//   return (
-//     <View className="flex-1 items-center justify-center bg-pink-200">
-//       <Text className="text-3xl font-bold text-purple-700">Tailwind</Text>
-//     </View>
-//   );
-// }

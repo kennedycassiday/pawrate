@@ -5,7 +5,7 @@ import { Link } from 'expo-router';
 export default function Footer() {
   return (
     <View style={styles.footer}>
-      <Link href="/" asChild>
+      <Link href="/home" asChild>
         <TouchableOpacity style={styles.iconContainer}>
           <Ionicons name="home" size={24} color="#FED2E2" />
         </TouchableOpacity>
