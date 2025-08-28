@@ -1,10 +1,17 @@
-import { View, Text, StyleSheet, TouchableOpacity, TextInput} from "react-native";
-import { Link } from 'expo-router';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Alert} from "react-native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useState } from 'react';
 
 export default function NewProfile() {
 
-  const handlePress = () => {
-    pass
+  const [name, setName] = useState('');
+  const [breed, setBreed] = useState('');
+
+  const createProfile = async () => {
+    if (!name.trim() || !breed.trim()) {
+      Alert.alert("Missing Info", "Please enter both name and breed.");
+      return;
+    }
   }
 
   return (
@@ -19,6 +26,8 @@ export default function NewProfile() {
           style={styles.textInput}
           placeholder="Enter your dog's name"
           placeholderTextColor="#96CEB4"
+          value={name}
+          onChangeText={setName}
         />
       </View>
 
@@ -28,17 +37,17 @@ export default function NewProfile() {
           style={styles.textInput}
           placeholder="Enter your dog's breed"
           placeholderTextColor="#96CEB4"
+          value={breed}
+          onChangeText={setBreed}
         />
       </View>
 
       <View style={styles.buttonContainer}>
-      <Link href="/" asChild>
-        <TouchableOpacity onPress={handlePress} style={styles.button}
+        <TouchableOpacity onPress={createProfile} style={styles.button}
         accessibilityRole="link"
         importantForAccessibility="yes">
           <Text style={styles.buttonText}>Submit!</Text>
         </TouchableOpacity>
-        </Link>
       </View>
     </View>
   );
