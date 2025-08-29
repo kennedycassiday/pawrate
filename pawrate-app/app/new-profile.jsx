@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, Alert} from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState } from 'react';
+import { router } from "expo-router";
 
 export default function NewProfile() {
 
@@ -9,8 +10,35 @@ export default function NewProfile() {
 
   const createProfile = async () => {
     if (!name.trim() || !breed.trim()) {
-      Alert.alert("Missing Info", "Please enter both name and breed.");
+      Alert.alert("Missing Info", "Please enter both name and breed.");   //alert will not work on web
       return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:8000/dogs', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: name.trim(),
+        breed: breed.trim(),
+      })
+    });
+
+      if (!response.ok) {
+        throw new Error('Failed to save profile to backend');
+      }
+
+      const savedDog = await response.json();
+      console.log(savedDog)
+      // await AsyncStorage.setItem('dogId', savedDog.id.toString());
+
+      router.replace('/home');
+
+    } catch (error) {
+      console.error("Error saving dog profile:", error);
+      Alert.alert("Error", "Could not save profile. Please try again.");
     }
   }
 
