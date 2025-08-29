@@ -1,13 +1,46 @@
 import React from 'react';
-import {TouchableOpacity, StyleSheet, Text, View, Pressable} from 'react-native';
+import {TouchableOpacity, StyleSheet, Text, View, Pressable, Alert} from 'react-native';
 import { useLocalSearchParams, useRouter} from 'expo-router';
 import Octicons from '@expo/vector-icons/Octicons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function EndSession() {
   const { count } = useLocalSearchParams();
   const router = useRouter();
-  const saveSession = () => {
-    console.log("session saved!")
+
+  const saveSession = async () => {
+    try {
+        const dogId = await AsyncStorage.getItem('dogId');
+        const currentTimestamp = new Date().toISOString();
+
+        const response = await fetch('http://localhost:8000/sessions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            "dog_id": parseInt(dogId),
+            "timestamp": currentTimestamp,
+            "breath_count": count,
+            "duration_secs": 15,
+            "rate_bpm": (count * 4)
+        })
+      });
+
+        if (!response.ok) {
+          throw new Error('Failed to save session to backend');
+        }
+
+        const savedSession = await response.json();
+        console.log(savedSession)
+
+        Alert.alert("Success", "Session was successfully saved!")
+        router.replace('/home');
+
+      } catch (error) {
+        console.error("Error saving breathing session:", error);
+        Alert.alert("Error", "Could not save session. Please try again.");
+      }
   }
 
   return (
