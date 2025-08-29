@@ -15,7 +15,7 @@ export default function NewProfile() {
     }
 
     try {
-      const response = await fetch('http://localhost:8000/dogs', {
+      const response = await fetch('http://192.168.0.150:8000/dogs', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

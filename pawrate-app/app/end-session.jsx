@@ -13,7 +13,7 @@ export default function EndSession() {
         const dogId = await AsyncStorage.getItem('dogId');
         const currentTimestamp = new Date().toISOString();
 
-        const response = await fetch('http://localhost:8000/sessions', {
+        const response = await fetch('http://192.168.0.150:8000/sessions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -34,8 +34,16 @@ export default function EndSession() {
         const savedSession = await response.json();
         console.log(savedSession)
 
-        Alert.alert("Success", "Session was successfully saved!")
-        router.replace('/home');
+        Alert.alert(
+            "Success",
+            "Session saved!",
+            [
+              {
+                text: "OK",
+                onPress: () => router.replace('/home')
+              }
+            ]
+          );
 
       } catch (error) {
         console.error("Error saving breathing session:", error);
