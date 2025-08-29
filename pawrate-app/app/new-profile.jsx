@@ -32,7 +32,7 @@ export default function NewProfile() {
 
       const savedDog = await response.json();
       console.log(savedDog)
-      // await AsyncStorage.setItem('dogId', savedDog.id.toString());
+      await AsyncStorage.setItem('dogId', savedDog.id.toString());
 
       router.replace('/home');
 
