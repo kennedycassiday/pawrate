@@ -13,10 +13,11 @@ export default function HomeScreen() {
           <Text style={styles.buttonText}>New Session</Text>
         </TouchableOpacity>
         </Link>
-
+      <Link href="/data-dashboard" asChild>
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>View Data</Text>
         </TouchableOpacity>
+      </Link>
 
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Email/Download Data</Text>
