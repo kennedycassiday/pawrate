@@ -37,18 +37,22 @@ export default function GraphView() {
 
       useEffect(() => {
         const fetchData = async () => {
-          const dogId = await AsyncStorage.getItem('dogId');
+          try {
+            const dogId = await AsyncStorage.getItem('dogId');
+            const response = await fetch(`http://192.168.0.150:8000/sessions/dog/${dogId}`, {
+              method: 'GET',
+            });
 
-          const response = await fetch(`http://192.168.0.150:8000/sessions/dog/${dogId}`, {
-            method: 'GET',
-          });
+            if (!response.ok) {
+              throw new Error('Failed to fetch sessions');
+            }
 
-          if (!response.ok) {
-            throw new Error('Failed to fetch sessions');
+            const sessions = await response.json();
+            setSessionData(sessions);
+          } catch (error) {
+            console.error('Error fetching sessions:', error);
+            // Could set an error state here
           }
-
-          const sessions = await response.json();
-          setSessionData(sessions);
         };
 
         fetchData();
