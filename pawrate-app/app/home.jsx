@@ -27,7 +27,7 @@ export default function HomeScreen() {
           <Text style={styles.buttonText}>Reminders</Text>
         </TouchableOpacity>
 
-        <Link href="/end-session" asChild>
+        {/* <Link href="/end-session" asChild>
           <TouchableOpacity style={{
             paddingVertical: 15,
             paddingHorizontal: 30,
@@ -65,7 +65,7 @@ export default function HomeScreen() {
           }}>
             <Text style={styles.buttonText}>Dog Profile (Dev)</Text>
           </TouchableOpacity>
-        </Link>
+        </Link> */}
       </View>
     </View>
   );
