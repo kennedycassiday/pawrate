@@ -45,7 +45,7 @@ export default function HomeScreen() {
           }}>
             <Text style={styles.buttonText}>End Session (Dev)</Text>
           </TouchableOpacity>
-        </Link>
+        </Link> */}
 
         <Link href="/new-profile" asChild>
           <TouchableOpacity style={{
@@ -63,9 +63,9 @@ export default function HomeScreen() {
             shadowRadius: 3.84,
             elevation: 5,
           }}>
-            <Text style={styles.buttonText}>Dog Profile (Dev)</Text>
+            <Text style={styles.buttonText}>New Profile (Dev)</Text>
           </TouchableOpacity>
-        </Link> */}
+        </Link>
       </View>
     </View>
   );

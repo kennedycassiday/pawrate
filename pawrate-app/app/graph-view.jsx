@@ -7,10 +7,10 @@ export default function GraphView() {
     const [sessionData, setSessionData] = useState([]);
 
     const data = {
-        labels: ["January", "February", "March", "April", "May", "June"],
+        labels: ["January", "February", "March"],
         datasets: [
           {
-            data: [20, 45, 28, 80, 99, 43],
+            data: [20, 45, 28],
             color: (opacity = 1) => `rgba(254, 210, 226, ${opacity})`, // optional
             strokeWidth: 2 // optional
           }
