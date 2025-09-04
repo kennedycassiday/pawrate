@@ -2,21 +2,21 @@ import { View, Text, StyleSheet, Dimensions } from "react-native";
 import { LineChart } from "react-native-chart-kit";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
+import { format } from 'date-fns';
 
 export default function GraphView() {
     const [sessionData, setSessionData] = useState([]);
-
-    const data = {
-        labels: ["January", "February", "March"],
+    const [chartData, setChartData] = useState({
+        labels: [],
         datasets: [
           {
-            data: [20, 45, 28],
-            color: (opacity = 1) => `rgba(254, 210, 226, ${opacity})`, // optional
-            strokeWidth: 2 // optional
+            data: [],
+            color: (opacity = 1) => `rgba(254, 210, 226, ${opacity})`,
+            strokeWidth: 2
           }
         ],
-        legend: ["Resting Respiratory Rate"] // optional
-      };
+        legend: ["Resting Respiratory Rate"]
+      });
 
       const chartConfig = {
         backgroundColor: "#8F87F1",
@@ -49,6 +49,23 @@ export default function GraphView() {
 
             const sessions = await response.json();
             setSessionData(sessions);
+
+            // Process data for chart
+            const sorted = sessions.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+            const labels = sorted.map(s => format(new Date(s.timestamp), 'MMM d, h:mm a'));
+            const formatData = sorted.map(s => s.breath_count);
+
+            setChartData({
+              labels: labels,
+              datasets: [
+                {
+                  data: formatData,
+                  color: (opacity = 1) => `rgba(254, 210, 226, ${opacity})`,
+                  strokeWidth: 2
+                }
+              ],
+              legend: ["Resting Respiratory Rate"]
+            });
           } catch (error) {
             console.error('Error fetching sessions:', error);
             // Could set an error state here
@@ -64,7 +81,7 @@ export default function GraphView() {
 
       <View>
         <LineChart
-            data={data}
+            data={chartData}
             width={Dimensions.get("window").width - 60}
             height={220}
             chartConfig={chartConfig}
