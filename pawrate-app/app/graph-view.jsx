@@ -1,93 +1,112 @@
 import { View, Text, StyleSheet, Dimensions } from "react-native";
 import { LineChart } from "react-native-chart-kit";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useEffect, useState } from 'react';
-import { format } from 'date-fns';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useEffect, useState } from "react";
+import { format } from "date-fns";
 
 export default function GraphView() {
-    const [sessionData, setSessionData] = useState([]);
-    const [chartData, setChartData] = useState({
-        labels: [],
-        datasets: [
-          {
-            data: [],
-            color: (opacity = 1) => `rgba(254, 210, 226, ${opacity})`,
-            strokeWidth: 2
-          }
-        ],
-        legend: ["Resting Respiratory Rate"]
-      });
-
-      const chartConfig = {
-        backgroundColor: "#8F87F1",
-        backgroundGradientFrom: "#8F87F1",
-        backgroundGradientTo: "#96CEB4",
-        decimalPlaces: 2, // optional, defaults to 2dp
+  const [loading, setLoading] = useState(true);
+  const [sessionData, setSessionData] = useState([]);
+  const [chartData, setChartData] = useState({
+    labels: [],
+    datasets: [
+      {
+        data: [],
         color: (opacity = 1) => `rgba(254, 210, 226, ${opacity})`,
-        labelColor: (opacity = 1) => `rgba(254, 210, 226, ${opacity})`,
-        style: {
-          borderRadius: 16
-        },
-        propsForDots: {
-          r: "6",
-          strokeWidth: "2",
-          stroke: "#FED2E2"
-        }
-      }
+        strokeWidth: 2,
+      },
+    ],
+    legend: ["Resting Respiratory Rate"],
+  });
 
-      useEffect(() => {
-        const fetchData = async () => {
-          try {
-            const dogId = await AsyncStorage.getItem('dogId');
-            const response = await fetch(`http://192.168.0.150:8000/sessions/dog/${dogId}`, {
-              method: 'GET',
-            });
+  const chartConfig = {
+    backgroundColor: "#8F87F1",
+    backgroundGradientFrom: "#8F87F1",
+    backgroundGradientTo: "#96CEB4",
+    decimalPlaces: 0, // No decimal places
+    color: (opacity = 1) => `rgba(254, 210, 226, ${opacity})`,
+    labelColor: (opacity = 1) => `rgba(254, 210, 226, ${opacity})`,
+    style: {
+      borderRadius: 16,
+    },
+    propsForDots: {
+      r: "6",
+      strokeWidth: "2",
+      stroke: "#FED2E2",
+    },
+  };
 
-            if (!response.ok) {
-              throw new Error('Failed to fetch sessions');
-            }
-
-            const sessions = await response.json();
-            setSessionData(sessions);
-
-            // Process data for chart
-            const sorted = sessions.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-            const labels = sorted.map(s => format(new Date(s.timestamp), 'MMM d, h:mm a'));
-            const formatData = sorted.map(s => s.breath_count);
-
-            setChartData({
-              labels: labels,
-              datasets: [
-                {
-                  data: formatData,
-                  color: (opacity = 1) => `rgba(254, 210, 226, ${opacity})`,
-                  strokeWidth: 2
-                }
-              ],
-              legend: ["Resting Respiratory Rate"]
-            });
-          } catch (error) {
-            console.error('Error fetching sessions:', error);
-            // Could set an error state here
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const dogId = await AsyncStorage.getItem("dogId");
+        const response = await fetch(
+          `http://192.168.0.150:8000/sessions/dog/${dogId}`,
+          {
+            method: "GET",
           }
-        };
+        );
 
-        fetchData();
-      }, []);
+        if (!response.ok) {
+          throw new Error("Failed to fetch sessions");
+        }
 
+        const sessions = await response.json();
+        console.log(sessions)
+        setSessionData(sessions);
+
+        // Process data for chart
+        const sorted = sessions.sort(
+          (a, b) => new Date(a.timestamp) - new Date(b.timestamp)
+        );
+        const labels = sorted.map((s) =>
+          format(new Date(s.timestamp), "MMM d, h:mm a")
+        );
+        const formatData = sorted.map((s) => s.breath_count);
+
+        setChartData({
+          labels: labels,
+          datasets: [
+            {
+              data: formatData,
+              color: (opacity = 1) => `rgba(254, 210, 226, ${opacity})`,
+              strokeWidth: 2,
+            },
+          ],
+          legend: ["Resting Respiratory Rate"],
+        });
+      } catch (error) {
+        console.error("Error fetching sessions:", error);
+        // Could set an error state here
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // {console.log("Session Data:", sessionData)}
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Graph View</Text>
-
-      <View>
+      {loading ? (
+        <View style={styles.loadingContainer}>
+          <Text style={styles.loadingText}>Loading sessions...</Text>
+        </View>
+      ) : chartData.labels.length > 0 && chartData.datasets[0].data.length > 0 ? (
         <LineChart
-            data={chartData}
-            width={Dimensions.get("window").width - 60}
-            height={220}
-            chartConfig={chartConfig}
+          data={chartData}
+          width={Dimensions.get("window").width - 60}
+          height={220}
+          chartConfig={chartConfig}
         />
-        {console.log('Session Data:', sessionData)}
-      </View>
+      ) : (
+        <View style={styles.noDataContainer}>
+          <Text style={styles.noDataText}>No valid data to display</Text>
+        </View>
+      )}
     </View>
   );
 }
@@ -156,5 +175,15 @@ const styles = StyleSheet.create({
     color: "#FED2E2",
     fontSize: 18,
     fontWeight: "bold",
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loadingText: {
+    color: "#FED2E2",
+    fontSize: 18,
+    fontWeight: "600",
   },
 });
