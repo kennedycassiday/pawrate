@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Dimensions } from "react-native";
+import { View, Text, StyleSheet, Dimensions, ScrollView } from "react-native";
 import { LineChart } from "react-native-chart-kit";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
@@ -87,21 +87,28 @@ export default function GraphView() {
     fetchData();
   }, []);
 
-  // {console.log("Session Data:", sessionData)}
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Graph View</Text>
+      {/* <Text style={styles.text}>Graph View</Text> */}
       {loading ? (
         <View style={styles.loadingContainer}>
           <Text style={styles.loadingText}>Loading sessions...</Text>
         </View>
       ) : chartData.labels.length > 0 && chartData.datasets[0].data.length > 0 ? (
+        <ScrollView
+        contentContainerStyle={{
+          flexGrow: 1,
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
         <LineChart
           data={chartData}
-          width={Dimensions.get("window").width - 60}
-          height={220}
+          width={Math.max(Dimensions.get('window').width, chartData.labels.length * 120)}
+          // width={Dimensions.get("window").width - 60}
+          height={Dimensions.get('window').height * 0.4}
           chartConfig={chartConfig}
         />
+        </ScrollView>
       ) : (
         <View style={styles.noDataContainer}>
           <Text style={styles.noDataText}>No valid data to display</Text>
