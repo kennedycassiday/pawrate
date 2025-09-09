@@ -17,7 +17,7 @@ export default function CalculateAverage() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const dogID = await AsyncStorage.getItem("dogId");
+        const dogId = await AsyncStorage.getItem("dogId");
         const response = await fetch(
           `http://192.168.0.150:8000/sessions/dog/${dogId}`,
           {
@@ -36,6 +36,7 @@ export default function CalculateAverage() {
         setLoading(false);
       }
     };
+    fetchData();
   }, []);
 
   //   const [loading, setLoading] = useState(true);
@@ -83,7 +84,7 @@ export default function CalculateAverage() {
           <Text style={styles.loadingText}>Loading sessions...</Text>
         </View>
       ) : (
-        <View>
+        <>
           <Text style={styles.text}>
             Please input the desired start and end dates for the time period you
             wish to average.
@@ -121,7 +122,7 @@ export default function CalculateAverage() {
               <Text style={styles.buttonText}>Get average!</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </>
       )}
     </View>
   );
