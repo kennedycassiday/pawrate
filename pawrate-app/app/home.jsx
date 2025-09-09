@@ -27,7 +27,7 @@ export default function HomeScreen() {
           <Text style={styles.buttonText}>Reminders</Text>
         </TouchableOpacity>
 
-        {/* <Link href="/end-session" asChild>
+        <Link href="/calculate-average" asChild>
           <TouchableOpacity style={{
             paddingVertical: 15,
             paddingHorizontal: 30,
@@ -43,9 +43,9 @@ export default function HomeScreen() {
             shadowRadius: 3.84,
             elevation: 5,
           }}>
-            <Text style={styles.buttonText}>End Session (Dev)</Text>
+            <Text style={styles.buttonText}>Calculate Average (Dev)</Text>
           </TouchableOpacity>
-        </Link> */}
+        </Link>
 
         <Link href="/new-profile" asChild>
           <TouchableOpacity style={{

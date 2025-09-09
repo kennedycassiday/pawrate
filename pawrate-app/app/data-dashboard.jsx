@@ -18,9 +18,11 @@ export default function DataDashboard() {
             <Text style={styles.buttonText}>List View</Text>
           </TouchableOpacity>
         </Link>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Calculate Average</Text>
-        </TouchableOpacity>
+        <Link href="/calculate-average" asChild>
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.buttonText}>Calculate Average</Text>
+          </TouchableOpacity>
+        </Link>
         <Link href="/manual-reading" asChild>
           <TouchableOpacity style={styles.button}>
             <Text style={styles.buttonText}>Add Manual Reading</Text>
