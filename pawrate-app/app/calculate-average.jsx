@@ -7,11 +7,13 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useState, useEffect } from "react";
+import { parseISO, format } from 'date-fns';
 import { router } from "expo-router";
 
 export default function CalculateAverage() {
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [availableDates, setAvailableDates] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -28,8 +30,9 @@ export default function CalculateAverage() {
           throw new Error("Failed to retrieve data from backend");
         }
         const savedSessions = await response.json();
-        console.log(savedSessions);
         setSessions(savedSessions);
+        console.log("Sessions", savedSessions);
+        processAvailableDates(savedSessions);
       } catch (error) {
         console.error("Error fetching sessions", error);
       } finally {
@@ -39,43 +42,29 @@ export default function CalculateAverage() {
     fetchData();
   }, []);
 
-  //   const [loading, setLoading] = useState(true);
-  //   const [startDate, setStartDate] = useState("");
-  //   const [endDate, setEndDate] = useState("");
+  // Conventional approach: Pure function that doesn't mutate original data
+  const processAvailableDates = (sessionsData) => {
+    if (!sessionsData || sessionsData.length === 0) {
+      setAvailableDates([]);
+      return;
+    }
 
-  //   const getAverage = async () => {
-  //     if (!startDate.trim() || !endDate.trim()) {
-  //       Alert.alert(
-  //         "Missing Info",
-  //         "Please choose both a start date and an end date."
-  //       ); //alert will not work on web
-  //       return;
-  //     }
+    // Create a copy and sort (doesn't mutate original)
+    const sortedSessions = [...sessionsData].sort(
+      (a, b) => new Date(a.timestamp) - new Date(b.timestamp)
+    );
 
-  //     try {
-  //       const dogId = await AsyncStorage.getItem("dogId");
-  //       const response = await fetch(
-  //         `http://192.168.0.150:8000/sessions/dog/${dogId}`,
-  //         {
-  //           method: "GET",
-  //         }
-  //       );
+    // Extract unique dates and convert Set to Array
+    const uniqueDates = Array.from(
+      new Set(
+        sortedSessions.map(s => format(new Date(s.timestamp), 'PPPP'))
+      )
+    );
 
-  //       if (!response.ok) {
-  //         throw new Error("Failed to retrieve data from backend");
-  //       }
+    setAvailableDates(uniqueDates);
+    console.log("Available Dates", uniqueDates);
+  };
 
-  //       const sessions = await response.json();
-  //       console.log(sessions);
-
-  //         const savedDog = await response.json();
-  //         console.log(savedDog)
-  //         await AsyncStorage.setItem('dogId', savedDog.id.toString());
-  //     } catch (error) {
-  //       console.error("Error calculating average:", error);
-  //       Alert.alert("Error", "Could not calculate average. Please try again.");
-  //     }
-  //   };
 
   return (
     <View style={styles.container}>
@@ -89,7 +78,6 @@ export default function CalculateAverage() {
             Please input the desired start and end dates for the time period you
             wish to average.
           </Text>
-
           <View style={styles.inputContainer}>
             <Text style={styles.inputLabel}>Start:</Text>
             <TextInput
