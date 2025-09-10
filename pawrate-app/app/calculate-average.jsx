@@ -6,8 +6,8 @@ import {
   TextInput,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { useState, useEffect } from "react";
-import { format } from 'date-fns';
+import React, { useState, useEffect, useCallback } from "react";
+import { format } from "date-fns";
 import DropDownPicker from "react-native-dropdown-picker";
 import { router } from "expo-router";
 
@@ -23,6 +23,10 @@ export default function CalculateAverage() {
   // state for end date dropdown
   const [endOpen, setEndOpen] = useState(false);
   const [endValue, setEndValue] = useState(null);
+
+  // When opening one dropdown, close the other
+  const onOpenStart = useCallback(() => setEndOpen(false), []);
+  const onOpenEnd = useCallback(() => setStartOpen(false), []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -61,9 +65,9 @@ export default function CalculateAverage() {
       (a, b) => new Date(a.timestamp) - new Date(b.timestamp)
     );
 
-    const datesArray = Array.from(new Set(
-        sortedSessions.map(s => format(new Date(s.timestamp), 'PPP'))
-      ));
+    const datesArray = Array.from(
+      new Set(sortedSessions.map((s) => format(new Date(s.timestamp), "PPP")))
+    );
 
     const uniqueDates = datesArray.map((date, index) => ({
       label: date,
@@ -73,7 +77,6 @@ export default function CalculateAverage() {
     setAvailableDates(uniqueDates);
     console.log("Available Dates", uniqueDates);
   };
-
 
   return (
     <View style={styles.container}>
@@ -90,52 +93,54 @@ export default function CalculateAverage() {
           <View style={styles.inputContainer}>
             <Text style={styles.inputLabel}>Start:</Text>
             <DropDownPicker
-                open={startOpen}
-                value={startValue}
-                items={availableDates}
-                setOpen={setStartOpen}
-                setValue={setStartValue}
-                setItems={setAvailableDates}
-                placeholder="Select a start date"
-                placeholderStyle={styles.dropdownPlaceholder}
-                listMode="SCROLLVIEW"
-                style={styles.dropdown}
-                dropDownContainerStyle={styles.dropdownContainer}
-                itemStyle={styles.dropdownItem}
-                labelStyle={styles.dropdownItemText}
-                textStyle={styles.dropdownItemText}
-                arrowIconStyle={{
-                  tintColor: "#96CEB4",
-                }}
-                tickIconStyle={{
-                  tintColor: "#8F87F1",
-                }}
+              open={startOpen}
+              value={startValue}
+              items={availableDates}
+              setOpen={setStartOpen}
+              setValue={setStartValue}
+              setItems={setAvailableDates}
+              placeholder="Select a start date"
+              placeholderStyle={styles.dropdownPlaceholder}
+              listMode="SCROLLVIEW"
+              style={styles.dropdown}
+              dropDownContainerStyle={styles.dropdownContainer}
+              itemStyle={styles.dropdownItem}
+              labelStyle={styles.dropdownItemText}
+              textStyle={styles.dropdownItemText}
+              onOpen={onOpenStart}
+              arrowIconStyle={{
+                tintColor: "#96CEB4",
+              }}
+              tickIconStyle={{
+                tintColor: "#8F87F1",
+              }}
             />
           </View>
 
           <View style={styles.inputContainer}>
             <Text style={styles.inputLabel}>End:</Text>
             <DropDownPicker
-                open={endOpen}
-                value={endValue}
-                items={availableDates}
-                setOpen={setEndOpen}
-                setValue={setEndValue}
-                setItems={setAvailableDates}
-                placeholder="Select an end date"
-                placeholderStyle={styles.dropdownPlaceholder}
-                listMode="SCROLLVIEW"
-                style={styles.dropdown}
-                dropDownContainerStyle={styles.dropdownContainer}
-                itemStyle={styles.dropdownItem}
-                labelStyle={styles.dropdownItemText}
-                textStyle={styles.dropdownItemText}
-                arrowIconStyle={{
-                  tintColor: "#96CEB4",
-                }}
-                tickIconStyle={{
-                  tintColor: "#8F87F1",
-                }}
+              open={endOpen}
+              value={endValue}
+              items={availableDates}
+              setOpen={setEndOpen}
+              setValue={setEndValue}
+              setItems={setAvailableDates}
+              placeholder="Select an end date"
+              placeholderStyle={styles.dropdownPlaceholder}
+              listMode="SCROLLVIEW"
+              style={styles.dropdown}
+              dropDownContainerStyle={styles.dropdownContainer}
+              itemStyle={styles.dropdownItem}
+              labelStyle={styles.dropdownItemText}
+              textStyle={styles.dropdownItemText}
+              onOpen={onOpenEnd}
+              arrowIconStyle={{
+                tintColor: "#96CEB4",
+              }}
+              tickIconStyle={{
+                tintColor: "#8F87F1",
+              }}
             />
           </View>
 
