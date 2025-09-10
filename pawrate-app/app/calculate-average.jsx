@@ -15,8 +15,14 @@ export default function CalculateAverage() {
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [availableDates, setAvailableDates] = useState([]);
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(null);
+
+  // state for start date dropdown
+  const [startOpen, setStartOpen] = useState(false);
+  const [startValue, setStartValue] = useState(null);
+
+  // state for end date dropdown
+  const [endOpen, setEndOpen] = useState(false);
+  const [endValue, setEndValue] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -84,11 +90,11 @@ export default function CalculateAverage() {
           <View style={styles.inputContainer}>
             <Text style={styles.inputLabel}>Start:</Text>
             <DropDownPicker
-                open={open}
-                value={value}
+                open={startOpen}
+                value={startValue}
                 items={availableDates}
-                setOpen={setOpen}
-                setValue={setValue}
+                setOpen={setStartOpen}
+                setValue={setStartValue}
                 setItems={setAvailableDates}
                 placeholder="Select a start date"
                 placeholderStyle={styles.dropdownPlaceholder}
@@ -105,23 +111,31 @@ export default function CalculateAverage() {
                   tintColor: "#8F87F1",
                 }}
             />
-            <TextInput
-              style={styles.textInput}
-              placeholder="Enter a start date"
-              placeholderTextColor="#96CEB4"
-                // value={startDate}
-                // onChangeText={setStartDate}
-            />
           </View>
 
           <View style={styles.inputContainer}>
             <Text style={styles.inputLabel}>End:</Text>
-            <TextInput
-              style={styles.textInput}
-              placeholder="Enter an end date"
-              placeholderTextColor="#96CEB4"
-              //   value={endDate}
-              //   onChangeText={setEndDate}
+            <DropDownPicker
+                open={endOpen}
+                value={endValue}
+                items={availableDates}
+                setOpen={setEndOpen}
+                setValue={setEndValue}
+                setItems={setAvailableDates}
+                placeholder="Select an end date"
+                placeholderStyle={styles.dropdownPlaceholder}
+                listMode="SCROLLVIEW"
+                style={styles.dropdown}
+                dropDownContainerStyle={styles.dropdownContainer}
+                itemStyle={styles.dropdownItem}
+                labelStyle={styles.dropdownItemText}
+                textStyle={styles.dropdownItemText}
+                arrowIconStyle={{
+                  tintColor: "#96CEB4",
+                }}
+                tickIconStyle={{
+                  tintColor: "#8F87F1",
+                }}
             />
           </View>
 
@@ -158,7 +172,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     width: "100%",
-    marginBottom: 20,
+    marginBottom: 40,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
