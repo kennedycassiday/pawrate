@@ -7,13 +7,16 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useState, useEffect } from "react";
-import { parseISO, format } from 'date-fns';
+import { format } from 'date-fns';
+import DropDownPicker from "react-native-dropdown-picker";
 import { router } from "expo-router";
 
 export default function CalculateAverage() {
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [availableDates, setAvailableDates] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,24 +45,24 @@ export default function CalculateAverage() {
     fetchData();
   }, []);
 
-  // Conventional approach: Pure function that doesn't mutate original data
   const processAvailableDates = (sessionsData) => {
     if (!sessionsData || sessionsData.length === 0) {
       setAvailableDates([]);
       return;
     }
 
-    // Create a copy and sort (doesn't mutate original)
     const sortedSessions = [...sessionsData].sort(
       (a, b) => new Date(a.timestamp) - new Date(b.timestamp)
     );
 
-    // Extract unique dates and convert Set to Array
-    const uniqueDates = Array.from(
-      new Set(
-        sortedSessions.map(s => format(new Date(s.timestamp), 'PPPP'))
-      )
-    );
+    const datesArray = Array.from(new Set(
+        sortedSessions.map(s => format(new Date(s.timestamp), 'PPP'))
+      ));
+
+    const uniqueDates = datesArray.map((date, index) => ({
+      label: date,
+      value: `item${index + 1}`,
+    }));
 
     setAvailableDates(uniqueDates);
     console.log("Available Dates", uniqueDates);
@@ -80,12 +83,34 @@ export default function CalculateAverage() {
           </Text>
           <View style={styles.inputContainer}>
             <Text style={styles.inputLabel}>Start:</Text>
+            <DropDownPicker
+                open={open}
+                value={value}
+                items={availableDates}
+                setOpen={setOpen}
+                setValue={setValue}
+                setItems={setAvailableDates}
+                placeholder="Select a start date"
+                placeholderStyle={styles.dropdownPlaceholder}
+                listMode="SCROLLVIEW"
+                style={styles.dropdown}
+                dropDownContainerStyle={styles.dropdownContainer}
+                itemStyle={styles.dropdownItem}
+                labelStyle={styles.dropdownItemText}
+                textStyle={styles.dropdownItemText}
+                arrowIconStyle={{
+                  tintColor: "#96CEB4",
+                }}
+                tickIconStyle={{
+                  tintColor: "#8F87F1",
+                }}
+            />
             <TextInput
               style={styles.textInput}
               placeholder="Enter a start date"
               placeholderTextColor="#96CEB4"
-              //   value={startDate}
-              //   onChangeText={setStartDate}
+                // value={startDate}
+                // onChangeText={setStartDate}
             />
           </View>
 
@@ -190,5 +215,37 @@ const styles = StyleSheet.create({
     color: "#FED2E2",
     fontSize: 18,
     fontWeight: "600",
+  },
+  dropdown: {
+    backgroundColor: "#FED2E2",
+    borderColor: "#96CEB4",
+    borderWidth: 2,
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    flex: 1,
+    minHeight: 50,
+    maxWidth: "70%",
+  },
+  dropdownContainer: {
+    backgroundColor: "#FED2E2",
+    borderColor: "#96CEB4",
+    borderWidth: 2,
+    borderRadius: 10,
+    marginTop: 5,
+  },
+  dropdownItem: {
+    paddingHorizontal: 15,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "#96CEB4",
+  },
+  dropdownItemText: {
+    color: "#96CEB4",
+    fontSize: 16,
+  },
+  dropdownPlaceholder: {
+    color: "#96CEB4",
+    fontSize: 16,
   },
 });
