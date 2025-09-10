@@ -1,10 +1,4 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  TextInput,
-} from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useState, useEffect, useCallback } from "react";
 import { format } from "date-fns";
@@ -90,7 +84,16 @@ export default function CalculateAverage() {
             Please input the desired start and end dates for the time period you
             wish to average.
           </Text>
-          <View style={styles.inputContainer}>
+          <View
+            style={[
+              styles.inputContainer,
+              {
+                position: "relative",
+                zIndex: startOpen ? 2000 : 1000, // iOS
+                elevation: startOpen ? 12 : 0, // Android
+              },
+            ]}
+          >
             <Text style={styles.inputLabel}>Start:</Text>
             <DropDownPicker
               open={startOpen}
@@ -103,7 +106,10 @@ export default function CalculateAverage() {
               placeholderStyle={styles.dropdownPlaceholder}
               listMode="SCROLLVIEW"
               style={styles.dropdown}
-              dropDownContainerStyle={styles.dropdownContainer}
+              dropDownContainerStyle={[
+                styles.dropdownContainer,
+                { zIndex: 3000, elevation: 16 },
+              ]}
               itemStyle={styles.dropdownItem}
               labelStyle={styles.dropdownItemText}
               textStyle={styles.dropdownItemText}
@@ -114,10 +120,20 @@ export default function CalculateAverage() {
               tickIconStyle={{
                 tintColor: "#8F87F1",
               }}
+              zIndex={3000}
             />
           </View>
 
-          <View style={styles.inputContainer}>
+          <View
+            style={[
+              styles.inputContainer,
+              {
+                position: "relative",
+                zIndex: endOpen ? 2000 : 500, // lower when closed
+                elevation: endOpen ? 12 : 0,
+              },
+            ]}
+          >
             <Text style={styles.inputLabel}>End:</Text>
             <DropDownPicker
               open={endOpen}
@@ -130,7 +146,11 @@ export default function CalculateAverage() {
               placeholderStyle={styles.dropdownPlaceholder}
               listMode="SCROLLVIEW"
               style={styles.dropdown}
-              dropDownContainerStyle={styles.dropdownContainer}
+              dropDownContainerStyle={[
+                styles.dropdownContainer,
+                { zIndex: 3000, elevation: 16 },
+              ]}
+              zIndex={2500}
               itemStyle={styles.dropdownItem}
               labelStyle={styles.dropdownItemText}
               textStyle={styles.dropdownItemText}
