@@ -65,11 +65,15 @@ export default function CalculateAverage() {
 
     const uniqueDates = datesArray.map((date, index) => ({
       label: date,
-      value: `item${index + 1}`,
+      value: date,
     }));
 
     setAvailableDates(uniqueDates);
     console.log("Available Dates", uniqueDates);
+  };
+
+  const getAverage = () => {
+    console.log(startValue, endValue)
   };
 
   return (
@@ -166,7 +170,7 @@ export default function CalculateAverage() {
 
           <View style={styles.buttonContainer}>
             <TouchableOpacity
-              //   onPress={getAverage}
+              onPress={getAverage}
               style={styles.button}
               accessibilityRole="link"
               importantForAccessibility="yes"
