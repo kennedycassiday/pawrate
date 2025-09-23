@@ -1,7 +1,14 @@
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useState, useEffect, useCallback } from "react";
-import { format } from "date-fns";
+import {
+  format,
+  parse,
+  parseISO,
+  startOfDay,
+  endOfDay,
+  isWithinInterval,
+} from "date-fns";
 import DropDownPicker from "react-native-dropdown-picker";
 import { router } from "expo-router";
 
@@ -22,6 +29,11 @@ export default function CalculateAverage() {
   const onOpenStart = useCallback(() => setEndOpen(false), []);
   const onOpenEnd = useCallback(() => setStartOpen(false), []);
 
+  const parseSessionTime = (ts) => {
+    const hasZone = /Z|[+-]\d\d:?\d\d$/.test(ts);
+    return parseISO(hasZone ? ts : `${ts}Z`);
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -38,7 +50,6 @@ export default function CalculateAverage() {
         }
         const savedSessions = await response.json();
         setSessions(savedSessions);
-        console.log("Sessions", savedSessions);
         processAvailableDates(savedSessions);
       } catch (error) {
         console.error("Error fetching sessions", error);
@@ -56,24 +67,66 @@ export default function CalculateAverage() {
     }
 
     const sortedSessions = [...sessionsData].sort(
-      (a, b) => new Date(a.timestamp) - new Date(b.timestamp)
+      (a, b) =>
+        parseSessionTime(a.timestamp).getTime() -
+        parseSessionTime(b.timestamp).getTime()
     );
 
-    const datesArray = Array.from(
-      new Set(sortedSessions.map((s) => format(new Date(s.timestamp), "PPP")))
+    const uniqueDayKeys = Array.from(
+      new Set(
+        sortedSessions.map((s) =>
+          format(parseSessionTime(s.timestamp), "yyyy-MM-dd")
+        )
+      )
     );
 
-    const uniqueDates = datesArray.map((date, index) => ({
-      label: date,
-      value: date,
-    }));
+    const items = uniqueDayKeys.map((ymd) => {
+      const d = parse(ymd, "yyyy-MM-dd", new Date());
+      return {
+        label: format(d, "MMMM do, yyyy"),
+        value: ymd,
+      };
+    });
 
-    setAvailableDates(uniqueDates);
-    console.log("Available Dates", uniqueDates);
+    setAvailableDates(items);
   };
 
   const getAverage = () => {
-    console.log(startValue, endValue)
+    if (!startValue || !endValue) {
+      Alert.alert(
+        "Missing Selection",
+        "Please select both start and end dates."
+      );
+      return;
+    }
+    const startDay = parse(startValue, "yyyy-MM-dd", new Date());
+    const endDay = parse(endValue, "yyyy-MM-dd", new Date());
+    console.log("Start:End", startDay, endDay);
+    if (startDay > endDay) {
+      Alert.alert(
+        "Invalid Range",
+        "End date must be on or after the start date."
+      );
+      return;
+    }
+    const sessionsInRange = sessions.filter((s) => {
+      const when = parseSessionTime(s.timestamp);
+      return isWithinInterval(when, { start: startDay, end: endDay });
+    });
+    if (sessionsInRange.length === 0) {
+      Alert.alert("No Data", "No sessions found in the selected range.");
+      return;
+    }
+    const numbers = sessionsInRange.map((num) => num.rate_bpm);
+    console.log("BPM values:", numbers);
+    const sum = numbers.reduce((a, b) => a + b, 0);
+    const average = (sum / numbers.length).toFixed(1);
+    console.log("Average:", average)
+
+    Alert.alert(
+      "Average",
+      `${average} (from ${numbers.length} session${numbers.length === 1 ? "" : "s"})`
+    );
   };
 
   return (
