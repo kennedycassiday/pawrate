@@ -1,11 +1,16 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 
 import { Link } from 'expo-router';
 
 export default function HomeScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Respiratory Rate Monitor</Text>
+      <Image
+        source={require('../assets/images/PawRate (2).png')}
+        style={styles.logo}
+        resizeMode="contain"
+      />
+      {/* <Text style={styles.text}>Respiratory Rate Monitor</Text> */}
 
       <View style={styles.buttonContainer}>
       <Link href="/new-session" asChild>
@@ -60,6 +65,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#8F87F1',
+  },
+  logo: {
+    width: 320,
+    height: 320,
+    marginBottom: -10,
   },
   text: {
     color: '#FED2E2',
