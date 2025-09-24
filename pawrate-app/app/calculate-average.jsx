@@ -1,4 +1,11 @@
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+  Platform,
+} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useState, useEffect, useCallback } from "react";
 import {
@@ -28,6 +35,8 @@ export default function CalculateAverage() {
   // When opening one dropdown, close the other
   const onOpenStart = useCallback(() => setEndOpen(false), []);
   const onOpenEnd = useCallback(() => setStartOpen(false), []);
+
+  const [result, setResult] = useState(null);
 
   const parseSessionTime = (ts) => {
     const hasZone = /Z|[+-]\d\d:?\d\d$/.test(ts);
@@ -121,12 +130,22 @@ export default function CalculateAverage() {
     console.log("BPM values:", numbers);
     const sum = numbers.reduce((a, b) => a + b, 0);
     const average = (sum / numbers.length).toFixed(1);
-    console.log("Average:", average)
+    console.log("Average:", average);
 
-    Alert.alert(
-      "Average",
-      `${average} (from ${numbers.length} session${numbers.length === 1 ? "" : "s"})`
-    );
+    if (Platform.OS === "web") {
+      // Show result in UI instead of alert
+      setResult({
+        average,
+        sessionCount: numbers.length,
+      });
+    } else {
+      Alert.alert(
+        "Average",
+        `${average} (from ${numbers.length} session${
+          numbers.length === 1 ? "" : "s"
+        })`
+      );
+    }
   };
 
   return (
@@ -222,14 +241,27 @@ export default function CalculateAverage() {
           </View>
 
           <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              onPress={getAverage}
-              style={styles.button}
-              accessibilityRole="link"
-              importantForAccessibility="yes"
-            >
-              <Text style={styles.buttonText}>Get average!</Text>
-            </TouchableOpacity>
+            {!result && (
+              <TouchableOpacity onPress={getAverage} style={styles.button}>
+                <Text style={styles.buttonText}>Get average!</Text>
+              </TouchableOpacity>
+            )}
+            {result && (
+              <View style={styles.resultContainer}>
+                <Text style={styles.resultTitle}>Average Resting Respiratory Rate</Text>
+                <Text style={styles.resultValue}>{result.average} breaths per minute</Text>
+                <Text style={styles.resultSubtext}>
+                  (from {result.sessionCount} session
+                  {result.sessionCount === 1 ? "" : "s"})
+                </Text>
+                <TouchableOpacity
+                  style={styles.clearButton}
+                  onPress={() => setResult(null)}
+                >
+                  <Text style={styles.clearButtonText}>Clear Result</Text>
+                </TouchableOpacity>
+              </View>
+            )}
           </View>
         </>
       )}
@@ -343,5 +375,44 @@ const styles = StyleSheet.create({
   dropdownPlaceholder: {
     color: "#96CEB4",
     fontSize: 16,
+  },
+  resultContainer: {
+    backgroundColor: "#FED2E2",
+    borderRadius: 15,
+    padding: 20,
+    marginTop: 30,
+    alignItems: "center",
+    borderWidth: 2,
+    borderColor: "#96CEB4",
+    width: "90%",
+  },
+  resultTitle: {
+    color: "#8F87F1",
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  resultValue: {
+    color: "#8F87F1",
+    fontSize: 36,
+    fontWeight: "bold",
+    marginBottom: 5,
+  },
+  resultSubtext: {
+    color: "#8F87F1",
+    fontSize: 16,
+    marginBottom: 15,
+    textAlign: "center",
+  },
+  clearButton: {
+    backgroundColor: "#8F87F1",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+  },
+  clearButtonText: {
+    color: "#FED2E2",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
