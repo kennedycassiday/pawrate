@@ -26,7 +26,7 @@ export default function HomeScreen() {
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Reminders</Text>
         </TouchableOpacity>
-
+{/*
         <Link href="/calculate-average" asChild>
           <TouchableOpacity style={{
             paddingVertical: 15,
@@ -65,7 +65,7 @@ export default function HomeScreen() {
           }}>
             <Text style={styles.buttonText}>New Profile (Dev)</Text>
           </TouchableOpacity>
-        </Link>
+        </Link> */}
       </View>
     </View>
   );

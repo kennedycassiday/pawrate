@@ -1,5 +1,6 @@
 import React from 'react';
 import {TouchableOpacity, StyleSheet, Text, View, Pressable, Alert} from 'react-native';
+import { Platform } from 'react-native';
 import { useLocalSearchParams, useRouter} from 'expo-router';
 import Octicons from '@expo/vector-icons/Octicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -34,6 +35,9 @@ export default function EndSession() {
         const savedSession = await response.json();
         console.log(savedSession)
 
+        if (Platform.OS === 'web') {
+          router.replace('/home');
+        } else {
         Alert.alert(
             "Success",
             "Session saved!",
@@ -43,7 +47,7 @@ export default function EndSession() {
                 onPress: () => router.replace('/home')
               }
             ]
-          );
+          );}
 
       } catch (error) {
         console.error("Error saving breathing session:", error);
