@@ -18,7 +18,7 @@ Coming Soon!
 
 ## Design
 
-Coming Soon!
+- [GHI](docs/ghi.md)
 
 ## Installation & Setup
 
