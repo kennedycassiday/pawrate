@@ -28,9 +28,11 @@ export default function DataDashboard() {
             <Text style={styles.buttonText}>Add Manual Reading</Text>
           </TouchableOpacity>
         </Link>
+        <Link href="/coming-soon" asChild>
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Email/Download Data</Text>
         </TouchableOpacity>
+        </Link>
       </View>
     </View>
   );

@@ -18,36 +18,19 @@ export default function HomeScreen() {
           <Text style={styles.buttonText}>View Data</Text>
         </TouchableOpacity>
       </Link>
-
+      <Link href="/coming-soon" asChild>
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Email/Download Data</Text>
         </TouchableOpacity>
-
+      </Link>
+      <Link href="/coming-soon" asChild>
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Reminders</Text>
         </TouchableOpacity>
-{/*
-        <Link href="/calculate-average" asChild>
-          <TouchableOpacity style={{
-            paddingVertical: 15,
-            paddingHorizontal: 30,
-            backgroundColor: '#FF13F0',
-            borderRadius: 10,
-            alignItems: 'center',
-            shadowColor: '#000',
-            shadowOffset: {
-              width: 0,
-              height: 2,
-            },
-            shadowOpacity: 0.25,
-            shadowRadius: 3.84,
-            elevation: 5,
-          }}>
-            <Text style={styles.buttonText}>Calculate Average (Dev)</Text>
-          </TouchableOpacity>
-        </Link>
+      </Link>
 
-        <Link href="/new-profile" asChild>
+
+        {/* <Link href="/new-profile" asChild>
           <TouchableOpacity style={{
             paddingVertical: 15,
             paddingHorizontal: 30,
